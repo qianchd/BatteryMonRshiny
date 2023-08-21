@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(stringr)
 ui <- fluidPage(
 
     # Application title
