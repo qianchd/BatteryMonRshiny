@@ -1,0 +1,5 @@
+Unique ID, Manufacturer, Chemistry, Voltage (Volts)
+25E3Sunwoda-HHB9790T7ECW-32T, Sunwoda-H, Lithium Ion, 12.604
+
+Date, Time, Status, %Charge, Total life(hours), Remaining life(sec), Charge Rate, Bat1 Temperature, Bat1 Voltage, Bat1 Charge Rate, Bat1 %Charge, Bat2 Temperature, Bat2 Voltage, Bat2 Charge Rate, Bat2 %Charge, Bat3 Temperature, Bat3 Voltage, Bat3 Charge Rate, Bat3 %Charge, Bat4 Temperature, Bat4 Voltage, Bat4 Charge Rate, Bat4 %Charge
+2023-07-12, 08:42:25, OK, 100%, 0.00, -1, -45106, , 12.604, -45106, 100.0%, , , , , , , , , , , , 

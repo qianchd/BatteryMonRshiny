@@ -44,12 +44,12 @@ ui <- fluidPage(
 server <- function(input, output) {
 
     output$BatteryPlot <- renderPlot({
-      setwd("C:\\Users\\nisha\\Documents\\PassMark\\BatteryMon")
+      folder_name <- "./logs/"
       if(input$month < 10) m <- paste0("0", as.character(input$month)) else m = as.character(input$month)
       if(input$date < 10) d <- paste0("0", as.character(input$date)) else d = as.character(input$date)
       y <- as.character(input$year)
       thedate <- paste0(y, "-", m, "-",  d)
-      battery <- tryCatch(read.table(paste0("./batterymonlog ", thedate, ".txt"), header = TRUE, sep =",", skip = 3),
+      battery <- tryCatch(read.table(paste0(folder_name, "batterymonlog ", thedate, ".txt"), header = TRUE, sep =",", skip = 3),
                           error = function(e) {cat("Error: no log in this date. \n")},
                           warning = function(w) {cat("Warning: no log in this date. \n")})
       if(is.null(battery)) {
@@ -72,7 +72,7 @@ server <- function(input, output) {
 
         battery <- data.frame(charge = bat1.Charge, time = bat1.time)
 
-        plot(bat1.time, bat1.Charge, type = "o", pch = 20, axes = F, xlab = paste0(thedate, " hours"))
+        plot(bat1.time, bat1.Charge, ylim = c(0, 100), type = "o", pch = 20, axes = F, xlab = paste0(thedate, " hours"))
         box()
         axis(side = 1, at = 0:24)
         axis(side = 2)
