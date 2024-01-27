@@ -9,6 +9,8 @@
 
 library(shiny)
 library(stringr)
+library(echarts4r)
+
 date_ymd <- as.numeric(unlist(strsplit(as.character(Sys.Date()), "-")))
 ui <- fluidPage(
 
@@ -35,7 +37,8 @@ ui <- fluidPage(
         ),
 
         mainPanel(
-           plotOutput("BatteryPlot")
+           # plotOutput("BatteryPlot")
+          echarts4rOutput("BatteryPlot")
         )
     )
 )
@@ -43,7 +46,8 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 
-    output$BatteryPlot <- renderPlot({
+    # output$BatteryPlot <- renderPlot({
+    output$BatteryPlot <- renderEcharts4r({
       folder_name <- "./logs/"
       if(input$month < 10) m <- paste0("0", as.character(input$month)) else m = as.character(input$month)
       if(input$date < 10) d <- paste0("0", as.character(input$date)) else d = as.character(input$date)
@@ -58,7 +62,15 @@ server <- function(input, output) {
         X=rnorm(n);
         Y=X*r+r_e*rnorm(n);
         Y=ifelse(X>0,Y,-Y);
-        plot(X,Y,col="pink")
+        # plot(X,Y,col="pink")
+        data <- data.frame(X=X, Y=Y)
+        e_charts(data, X) |>
+          e_scatter(Y) |>
+          e_x_axis(min=-4, max=4) |> 
+          e_y_axis(min=-4, max=4) |>
+          e_legend(show=FALSE) |>
+          e_animation(duration = 300) |>
+          e_show_loading()
       }else{
         tem = battery$Bat1..Charge
         bat1.Charge = rep(0, length(tem))
@@ -71,11 +83,19 @@ server <- function(input, output) {
         for(i in seq_len(length(bat1.Charge))) {bat1.time[i] <- sum(as.numeric(tem[[i]]) * c(3600, 60, 1)) / 3600}
 
         battery <- data.frame(charge = bat1.Charge, time = bat1.time)
+        battery |> 
+          e_charts(time) |> 
+          e_line(charge, showSymbol = TRUE, symbolSize = 1, lineStyle = list(type = "dashed")) |>
+          e_x_axis(min=0, max=24) |> 
+          e_y_axis(min=0, max=100) |>
+          e_tooltip(trigger = c("axis"), axisPointer = list(type = "cross")) |>  
+          e_animation(duration = 300) |>
+          e_show_loading()
 
-        plot(bat1.time, bat1.Charge, ylim = c(0, 100), type = "o", pch = 20, axes = F, xlab = paste0(thedate, " hours"))
-        box()
-        axis(side = 1, at = 0:24)
-        axis(side = 2)
+        # plot(bat1.time, bat1.Charge, ylim = c(0, 100), type = "o", pch = 20, axes = F, xlab = paste0(thedate, " hours"))
+        # box()
+        # axis(side = 1, at = 0:24)
+        # axis(side = 2)
       }
     })
 }
