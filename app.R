@@ -57,7 +57,7 @@ server <- function(input, output) {
                           error = function(e) {cat("Error: no log in this date. \n")},
                           warning = function(w) {cat("Warning: no log in this date. \n")})
       if(is.null(battery)) {
-        n=10000;
+        n=1000;
         r=0.7;r_e=(1-r*r)^.5;
         X=rnorm(n);
         Y=X*r+r_e*rnorm(n);
@@ -80,9 +80,16 @@ server <- function(input, output) {
         tem <- battery$Time
         tem = str_split(str_sub(tem, 2, -1), ":")
         bat1.time <- c()
-        for(i in seq_len(length(bat1.Charge))) {bat1.time[i] <- sum(as.numeric(tem[[i]]) * c(3600, 60, 1)) / 3600}
+        bat1.time.text <- c()
+        for(i in seq_len(length(bat1.Charge))) {
+          tem.time <- paste0(thedate, " ", tem[[i]][1], ":", tem[[i]][2], ":", tem[[i]][3])
+          # print(tem.time)
+          # bat1.time[i] <- tem.time
+          bat1.time[i] <- sum(as.numeric(tem[[i]]) * c(3600, 60, 1)) / 3600
+          bat1.time.text[i] <- paste(tem[[i]][1], tem[[i]][2], tem[[i]][3], sep = ":")
+        }
 
-        battery <- data.frame(charge = bat1.Charge, time = bat1.time)
+        battery <- data.frame(charge = bat1.Charge, time = bat1.time, time.text = bat1.time.text)
         battery |> 
           e_charts(time) |> 
           e_line(charge, showSymbol = TRUE, symbolSize = 1, lineStyle = list(type = "dashed")) |>
